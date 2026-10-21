@@ -1,15 +1,22 @@
-import re
+import sys
 from pathlib import Path
 
-data_folder = Path(__file__).resolve().parent.parent / "data"
+project_folder = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(project_folder))
 
+from foundation.util import (
+    read_file,
+    write_file,
+    clean_txt,    
+)
+data_folder = project_folder / "data"
 input_file = data_folder / "PLAINTEXT.txt"
 output_file = data_folder / "encrypted.txt"
 
 def caesar_encrypt(plain_text, key):
     cipher_text = ""
-    reading_plain_text = plain_text.read_text(encoding="utf-8")
-    cleaned_plain_text = re.sub(r"[^a-zA-Z]", "", reading_plain_text).upper()
+    reading_plain_text = read_file(plain_text)
+    cleaned_plain_text = clean_txt(reading_plain_text)
 
     for char in cleaned_plain_text:
         if char.isalpha():
@@ -19,7 +26,7 @@ def caesar_encrypt(plain_text, key):
 
 def main():
     cipher_text = caesar_encrypt(input_file, 3)
-    output_file.write_text(cipher_text, encoding="utf-8")
+    write_file(output_file, cipher_text)
     print(cipher_text)
 
 if __name__ == "__main__":
